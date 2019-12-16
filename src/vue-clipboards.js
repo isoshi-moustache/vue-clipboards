@@ -10,13 +10,13 @@ if (!Clipboard) {
     throw new Error('[vue-clipboards] cannot locate Clipboard.');
 }
 
-function isDom (obj) {
-    return typeof window.HTMLElement === 'object'
-        ? obj instanceof window.HTMLElement
-        : obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string';
+function isDom(obj) {
+    return typeof window.HTMLElement === 'object' ?
+        obj instanceof window.HTMLElement :
+        obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string';
 }
 
-function doubleClickHandler (e) {
+function doubleClickHandler(e) {
     const target = e.target;
 
     if (document.createRange) {
@@ -35,7 +35,7 @@ function doubleClickHandler (e) {
 }
 
 export const clipboard = {
-    async bind (el, { value: text, modifiers }, vnode) {
+    async bind(el, { value: text, modifiers }, vnode) {
         const option = {};
         let $parent = null;
 
@@ -50,9 +50,9 @@ export const clipboard = {
         }
 
         if (vnode.data.attrs && vnode.data.attrs.model) {
-            $parent = isDom(vnode.data.attrs.model)
-                    ? vnode.data.attrs.model
-                    : document.querySelector(vnode.data.attrs.model);
+            $parent = isDom(vnode.data.attrs.model) ?
+                vnode.data.attrs.model :
+                document.querySelector(vnode.data.attrs.model);
         }
 
         // 修复按钮脱离文档流时，clipboard监听失败问题
@@ -83,25 +83,25 @@ export const clipboard = {
         const withNativeSelection = modifiers.nselect || false;
 
         if (withNativeSelection) {
-            vnode.elm.addEventListener('dblclick', doubleClickHandler);
+            vnode.elm.addEventListener('touchstart', doubleClickHandler);
         }
 
         return vnode.elm.$clipboards;
     },
-    unbind (vnode) {
+    unbind(vnode) {
         if (vnode.elm && vnode.elm.$clipboards && vnode.elm.$clipboards.destroy) {
             vnode.elm.$clipboards.destroy();
-            vnode.elm.removeEventListener('dblclick', doubleClickHandler);
+            vnode.elm.removeEventListener('touchstart', doubleClickHandler);
             delete vnode.elm.$clipboards;
         }
     },
-    update (el, binding, vnode) {
+    update(el, binding, vnode) {
         binding.def.unbind(vnode);
-        vnode.elm.removeEventListener('dblclick', doubleClickHandler);
+        vnode.elm.removeEventListener('touchstart', doubleClickHandler);
         binding.def.bind(el, binding, vnode);
     }
 };
 
-export default function (Vue) {
+export default function(Vue) {
     Vue.directive('clipboard', clipboard);
 }

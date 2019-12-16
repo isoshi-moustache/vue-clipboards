@@ -12,7 +12,7 @@ function _typeof(obj) {
   return _typeof(obj);
 }
 
-var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 function unwrapExports (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -68,9 +68,7 @@ var select_1 = select;
 
 var clipboardAction = createCommonjsModule(function (module, exports) {
 (function (global, factory) {
-    if (typeof undefined === "function" && undefined.amd) {
-        undefined(['module', 'select'], factory);
-    } else {
+    {
         factory(module, select_1);
     }
 })(commonjsGlobal, function (module, _select) {
@@ -358,6 +356,8 @@ E.prototype = {
 };
 
 var tinyEmitter = E;
+var TinyEmitter = E;
+tinyEmitter.TinyEmitter = TinyEmitter;
 
 var is = createCommonjsModule(function (module, exports) {
 /**
@@ -621,9 +621,7 @@ var listen_1 = listen;
 
 var clipboard = createCommonjsModule(function (module, exports) {
 (function (global, factory) {
-    if (typeof undefined === "function" && undefined.amd) {
-        undefined(['module', './clipboard-action', 'tiny-emitter', 'good-listener'], factory);
-    } else {
+    {
         factory(module, clipboardAction, tinyEmitter, listen_1);
     }
 })(commonjsGlobal, function (module, _clipboardAction, _tinyEmitter, _goodListener) {
@@ -909,7 +907,7 @@ var clipboard$1 = {
         withNativeSelection = modifiers.nselect || false;
 
         if (withNativeSelection) {
-          vnode.elm.addEventListener('dblclick', doubleClickHandler);
+          vnode.elm.addEventListener('touchstart', doubleClickHandler);
         }
 
         return $return(vnode.elm.$clipboards);
@@ -921,13 +919,13 @@ var clipboard$1 = {
   unbind: function unbind(vnode) {
     if (vnode.elm && vnode.elm.$clipboards && vnode.elm.$clipboards.destroy) {
       vnode.elm.$clipboards.destroy();
-      vnode.elm.removeEventListener('dblclick', doubleClickHandler);
+      vnode.elm.removeEventListener('touchstart', doubleClickHandler);
       delete vnode.elm.$clipboards;
     }
   },
   update: function update(el, binding, vnode) {
     binding.def.unbind(vnode);
-    vnode.elm.removeEventListener('dblclick', doubleClickHandler);
+    vnode.elm.removeEventListener('touchstart', doubleClickHandler);
     binding.def.bind(el, binding, vnode);
   }
 };
